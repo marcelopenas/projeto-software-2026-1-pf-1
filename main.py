@@ -64,7 +64,7 @@ def user_required() -> Callable[[F], F]:
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, origins=["https://projeto-software-2026-1-pf-2.vercel.app/"])
 
     postgres_user = os.environ.get("POSTGRES_USER", "appuser")
     postgres_password = os.environ.get("POSTGRES_PASSWORD", "apppass")
