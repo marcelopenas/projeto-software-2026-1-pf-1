@@ -133,7 +133,15 @@ def create_app() -> Flask:
     def get_course(course_id) -> tuple[Response, int]:
         course = Course.query.get_or_404(course_id)
         return jsonify(
-            {"id": str(course.id), "code": course.code, "name": course.name},
+            {
+                "id": str(course.id),
+                "code": course.code,
+                "name": course.name,
+                "instructor_name": course.instructor_name,
+                "date": course.date,
+                "status": course.status.value,
+                "instructor_email": course.instructor_email,
+            },
         ), 200
 
     @app.route("/courses", methods=["GET"])
@@ -141,7 +149,15 @@ def create_app() -> Flask:
     def list_courses() -> tuple[Response, int]:
         courses = Course.query.all()
         course_list = [
-            {"id": str(course.id), "code": course.code, "name": course.name}
+            {
+                "id": str(course.id),
+                "code": course.code,
+                "name": course.name,
+                "instructor_name": course.instructor_name,
+                "date": course.date,
+                "status": course.status.value,
+                "instructor_email": course.instructor_email,
+            }
             for course in courses
         ]
         return jsonify(course_list), 200
