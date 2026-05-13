@@ -1,4 +1,4 @@
-USE postgres;
+USE database;
 CREATE TABLE courses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code TEXT NOT NULL,
