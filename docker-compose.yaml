@@ -6,7 +6,10 @@ services:
     networks:
       - network-courses
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@database:5432/
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: database
+      POSTGRES_URL: database-courses
       AUTH0_DOMAIN: "dev-du32k7rlanetjfu6.us.auth0.com"
       AUTH0_AUDIENCE: "https://dev-du32k7rlanetjfu6.us.auth0.com/api/v2/"
     depends_on:

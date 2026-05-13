@@ -1,5 +1,6 @@
 # tests/conftest.py
 import os
+from unittest.mock import patch
 
 import pytest
 from testcontainers.postgres import PostgresContainer
@@ -22,8 +23,10 @@ def postgres_container():
 def app(postgres_container):
 
     os.environ["SQLALCHEMY_DATABASE_URI"] = postgres_container
+    os.environ["TESTING"] = "true"
 
     flask_app = create_app()
+    flask_app.config["TESTING"] = True
 
     with flask_app.app_context():
         db.create_all()
@@ -33,4 +36,7 @@ def app(postgres_container):
 
 @pytest.fixture
 def client(app):
-    return app.test_client()
+    # Mock JWT decorators to bypass authentication in tests
+    with patch("main.verify_jwt_in_request"), \
+         patch("main.get_jwt", return_value={"https://social-insper.com/roles": ["ADMIN", "USER"]}):
+        yield app.test_client()

@@ -7,12 +7,19 @@ NOT_FOUND = 404
 def test_get_user_404(client) -> None:
 
     # Teste de Recuperação
-    get_response = client.get(f"/courses/00000000-0000-0000-0000-000000000000")
+    get_response = client.get("/courses/00000000-0000-0000-0000-000000000000")
     assert get_response.status_code == NOT_FOUND  # noqa: S101
 
 
 def test_create_and_get_course_and_delete_course(client) -> None:
-    new_course = {"name": "course", "code": "course_code"}
+    new_course = {
+        "name": "course",
+        "code": "course_code",
+        "instructor_name": "John Doe",
+        "date": "2024-01-15",
+        "status": "DISPONIVEL",
+        "instructor_email": "john@example.com",
+    }
     post_response = client.post("/courses", json=new_course)
     assert post_response.status_code == CREATED  # noqa: S101
     course_id = post_response.get_json()["id"]
@@ -25,7 +32,14 @@ def test_create_and_get_course_and_delete_course(client) -> None:
 
 
 def test_create_and_delete_course(client) -> None:
-    new_course = {"name": "course", "code": "course_code"}
+    new_course = {
+        "name": "course",
+        "code": "unique_course_code_123",
+        "instructor_name": "Jane Smith",
+        "date": "2024-02-20",
+        "status": "DISPONIVEL",
+        "instructor_email": "jane@example.com",
+    }
     post_response = client.post("/courses", json=new_course)
     assert post_response.status_code == CREATED  # noqa: S101
     course_id = post_response.get_json()["id"]
@@ -37,12 +51,26 @@ def test_create_and_delete_course(client) -> None:
 def test_create_two_courses_and_list_and_delete_both_courses(
     client,
 ) -> None:
-    new_course_1 = {"name": "course_1", "code": "course_1_code"}
+    new_course_1 = {
+        "name": "course_1",
+        "code": "course_1_code",
+        "instructor_name": "Alice Johnson",
+        "date": "2024-03-10",
+        "status": "DISPONIVEL",
+        "instructor_email": "alice@example.com",
+    }
     post_response = client.post("/courses", json=new_course_1)
     assert post_response.status_code == CREATED  # noqa: S101
     course_1_id = post_response.get_json()["id"]
 
-    new_course_2 = {"name": "course_2", "code": "course_2_code"}
+    new_course_2 = {
+        "name": "course_2",
+        "code": "course_2_code",
+        "instructor_name": "Bob Wilson",
+        "date": "2024-04-15",
+        "status": "DISPONIVEL",
+        "instructor_email": "bob@example.com",
+    }
     post_response = client.post("/courses", json=new_course_2)
     assert post_response.status_code == CREATED  # noqa: S101
     course_2_id = post_response.get_json()["id"]
