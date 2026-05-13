@@ -105,6 +105,15 @@ def create_app() -> Flask:
     @admin_required()
     def create_course() -> tuple[Response, int]:
         data = request.json
+        if not data:
+            return jsonify({"error": "Request body is required"}), 400
+
+        required_fields = ["code", "name", "instructor_name", "date", "status", "instructor_email"]
+        missing_fields = [field for field in required_fields if field not in data]
+
+        if missing_fields:
+            return jsonify({"error": f"Missing required fields: {', '.join(missing_fields)}"}), 400
+
         course = Course(
             code=data["code"],
             name=data["name"],
