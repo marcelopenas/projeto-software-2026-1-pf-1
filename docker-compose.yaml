@@ -1,0 +1,49 @@
+services:
+  courses:
+    image: "marcelopenas/projeto-software-2026-1-pf-1"
+    ports:
+      - "5000:5000"
+    networks:
+      - network-courses
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/
+      AUTH0_DOMAIN: "dev-du32k7rlanetjfu6.us.auth0.com"
+      AUTH0_AUDIENCE: "https://dev-du32k7rlanetjfu6.us.auth0.com/api/v2/"
+    depends_on:
+      - database-courses
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/courses"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  database-courses:
+    image: "postgres:16"
+    ports:
+      - 5432:5432
+    networks:
+      - network-courses
+    volumes:
+      - db-data-courses:/var/lib/postgresql/data/
+      - ${PWD}/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+volumes:
+  db-data-courses:
+
+networks:
+  network-courses:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "0.0.0.0"

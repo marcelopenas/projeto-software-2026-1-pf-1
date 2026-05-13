@@ -1,0 +1,36 @@
+# tests/conftest.py
+import os
+
+import pytest
+from testcontainers.postgres import PostgresContainer
+
+from db import db
+from main import create_app
+
+
+@pytest.fixture(scope="session")
+def postgres_container():
+    with PostgresContainer("postgres:15-alpine") as postgres:
+        url = postgres.get_connection_url()
+
+        if url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+psycopg2://")
+
+        yield url
+
+@pytest.fixture(scope="session")
+def app(postgres_container):
+
+    os.environ["SQLALCHEMY_DATABASE_URI"] = postgres_container
+
+    flask_app = create_app()
+
+    with flask_app.app_context():
+        db.create_all()
+        yield flask_app
+        db.session.remove()
+        db.drop_all()
+
+@pytest.fixture
+def client(app):
+    return app.test_client()
