@@ -79,8 +79,8 @@ def create_app() -> Flask:
     AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
     AUTH0_AUDIENCE = os.environ.get("AUTH0_AUDIENCE")
 
-    if not AUTH0_DOMAIN or not AUTH0_AUDIENCE:
-        raise ValueError("AUTH0_DOMAIN and AUTH0_AUDIENCE must be set")
+    # if not AUTH0_DOMAIN or not AUTH0_AUDIENCE:
+    #     raise ValueError("AUTH0_DOMAIN and AUTH0_AUDIENCE must be set")
 
     app.config["JWT_ALGORITHM"] = "RS256"
     app.config["JWT_DECODE_AUDIENCE"] = AUTH0_AUDIENCE
