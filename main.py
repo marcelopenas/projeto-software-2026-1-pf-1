@@ -90,6 +90,9 @@ def create_app() -> Flask:
     jwt_manager = JWTManager(app)
     db.init_app(app)
 
+    with app.app_context():
+        db.create_all()
+
     jwks_client = PyJWKClient(f"https://{AUTH0_DOMAIN}/.well-known/jwks.json")
 
     @jwt_manager.decode_key_loader
